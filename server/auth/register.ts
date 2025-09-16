@@ -14,8 +14,7 @@ const userRouters = Router()
 userRouters.post('/register', async  (req: Request, res: Response) => {
     try {
 
-const {email, name, password} = req.body
-
+const {email, name, password, roleId} = req.body
     const existingUser = await prisma.user.findUnique({where: {email}})
 
     if (existingUser) {
@@ -27,7 +26,8 @@ const {email, name, password} = req.body
         data: {
             name,
             email,
-            password: hash
+            password: hash,
+            roleId: Number(roleId)
         }
     })
 
@@ -49,7 +49,7 @@ userRouters.post('/login' ,async (req: Request, res: Response) => {
         res.send({message: "User not found"})
     }
     
-    const payload = {id: existingUser?.id, email: existingUser?.email, name: existingUser?.name}
+    const payload = {id: existingUser?.id, email: existingUser?.email, name: existingUser?.name, roleId: existingUser?.roleId}
     console.log('ay',payload);
     
 

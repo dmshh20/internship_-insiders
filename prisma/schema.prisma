@@ -14,14 +14,17 @@ datasource db {
   url       = env("DATABASE_URL")
   directUrl = env("DIRECT_URL")
 }
-        
+
 model User {
   id       Int     @id @default(autoincrement())
   name     String
   email    String  @unique
   password String
-  books    Book[]  
+  books    Book[]
+  roleId   Int?      
+  role     Role?      @relation(fields: [roleId], references: [id])
 }
+
 
 model Book {
   id       Int    @id @default(autoincrement())
@@ -29,4 +32,10 @@ model Book {
   authorId Int
   author   User   @relation(fields: [authorId], references: [id])
   photo    String
+}
+
+model Role {
+  id       Int     @id @default(autoincrement())
+  name     String  @unique
+  users    User[]
 }

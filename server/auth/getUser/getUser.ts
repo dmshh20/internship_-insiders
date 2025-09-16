@@ -5,6 +5,7 @@ interface JwtPayload {
   id: string;
   email: string
   name: string
+  roleId: string
 }
 declare global {
   namespace Express {
@@ -12,6 +13,7 @@ declare global {
       userId?: string; 
       userEmail?: string
       username?: string
+      roleId: string
     }
   }
 }
@@ -32,6 +34,7 @@ export const authMiddleware = (req: Request, res: Response, next: NextFunction) 
     req.userId = decoded.id; 
     req.userEmail = decoded.email
     req.username = decoded.name
+    req.roleId = decoded.roleId
 
     next();
   } catch (err) {
