@@ -12,7 +12,9 @@ const prisma = new PrismaClient()
 const userRouters = Router()
 
 userRouters.post('/register', async  (req: Request, res: Response) => {
-    const {email, name, password} = req.body
+    try {
+
+const {email, name, password} = req.body
 
     const existingUser = await prisma.user.findUnique({where: {email}})
 
@@ -30,11 +32,16 @@ userRouters.post('/register', async  (req: Request, res: Response) => {
     })
 
     return res.send({createUser})
+
+    } catch(error) {
+        throw error
+    }
 });
 
 
 userRouters.post('/login' ,async (req: Request, res: Response) => {
-    const {email, password} = req.body
+   try {
+     const {email, password} = req.body
     
     const existingUser = await prisma.user.findUnique({where: {email}})
 
@@ -42,7 +49,7 @@ userRouters.post('/login' ,async (req: Request, res: Response) => {
         res.send({message: "User not found"})
     }
     
-    const payload = {id: existingUser?.id}
+    const payload = {id: existingUser?.id, email: existingUser?.email, name: existingUser?.name}
     console.log('ay',payload);
     
 
@@ -56,6 +63,13 @@ userRouters.post('/login' ,async (req: Request, res: Response) => {
     const token = jwt.sign(payload, process.env.SECRET_KEY as string, {expiresIn: '1h'})
 
     return res.send({access_token: token})
+
+
+   } catch(error) {
+    console.log(error);
+    throw error
+    
+   }
 })
 
 export default userRouters

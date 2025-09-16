@@ -11,25 +11,39 @@ const prisma = new PrismaClient()
 const bookRoutes = Router()
 
 bookRoutes.post('/me/books', authMiddleware ,async (req: Request, res: Response) => {
+   try {
+    const userId = Number(req.userId)
     const { name, authorId, photo} = req.body
 
     const creatingBook = await prisma.book.create({
         data: {
             name,
-            authorId,
-            photo
+            authorId: userId,
+            photo,
         }
     })
 
     return res.send({creatingBook})
+   } catch(error) {
+        console.log(error);
+        throw error
+        
+   }
 })
 
 bookRoutes.get('/me/books', authMiddleware, async (req: Request, res: Response) => {
-    const getBooks =  await prisma.book.findMany({where: {
+   try {
+ const getBooks =  await prisma.book.findMany({where: {
        authorId: Number(req.userId )
     }})
 
     return res.send({getBooks})
+
+   } catch(error) {
+    console.log(error);
+    throw error
+    
+   }
 })
 
 bookRoutes.delete('/me/books/:id', authMiddleware, async (req: Request, res: Response) => {
